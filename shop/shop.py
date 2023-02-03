@@ -2,7 +2,7 @@ import os, shutil, math, pickle, time, glob
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 
-from helpers import exception_helper, image_helper, request_helper, post_helper
+from helpers import exception_helper, image_helper, request_helper, post_helper, strings_helper
 import constants
 
 class ShopModule:
@@ -140,9 +140,9 @@ class ShopModule:
             draw = ImageDraw.Draw(icon_image)
             draw.text((256, 423), item_name.upper(), font=font, fill='white', anchor='ms') #Writes display name
 
-            info_text = "NOVO COSMÉTICO"
+            info_text = strings_helper.STRINGS["new_item"]
             if days_gone is not None:
-                info_text = f'VISTO HÁ: {days_gone} dias atrás'
+                info_text = strings_helper.STRINGS["item_gone_duration"].replace("{days}", days_gone)
 
             font = ImageFont.truetype(constants.FONT_PATH, 33)
             draw = ImageDraw.Draw(icon_image)
@@ -236,6 +236,6 @@ class ShopModule:
         reformatted_date = f'{split_date[2]}/{split_date[1]}/{split_date[0]}'
 
         post_helper.post_image(
-            os.path.join(self._RESULT_PATH, f'shop_{shop_date}.jpg'), 
-            f'🛍 Loja Fortnite {reformatted_date}!\n\n👾 Use o meu código "KAPIROSCO" ao fazer suas compras na Loja e apoie meu trabalho! #ad\n\n#Fortnite!'
+            os.path.join(self._RESULT_PATH, f'shop_{shop_date}.jpg'),
+            strings_helper.STRINGS["shop_post_caption"].replace('{date}', reformatted_date)
         )
