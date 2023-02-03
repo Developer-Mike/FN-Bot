@@ -142,7 +142,7 @@ class ShopModule:
 
             info_text = strings_helper.STRINGS["new_item"]
             if days_gone is not None:
-                info_text = strings_helper.STRINGS["item_gone_duration"].replace("{days}", days_gone)
+                info_text = strings_helper.STRINGS["item_gone_duration"].replace("{days}", str(days_gone))
 
             font = ImageFont.truetype(constants.FONT_PATH, 33)
             draw = ImageDraw.Draw(icon_image)
