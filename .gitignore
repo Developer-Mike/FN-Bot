@@ -1,0 +1,9 @@
+.env
+
+__pycache__/
+.vscode/
+
+result/
+*.p
+
+_upload_helper/
