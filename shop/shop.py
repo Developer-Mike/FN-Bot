@@ -66,7 +66,6 @@ class ShopModule:
         rainbow_image = image_helper.from_path(os.path.join(constants.ASSETS_PATH, 'rainbow.png'))
         overlay_image = image_helper.from_path(os.path.join(constants.ASSETS_PATH, 'overlay.png'))
         new_badge = image_helper.from_path(os.path.join(constants.ASSETS_PATH, "new_badge.png"))
-        # granted_overlay = image_helper.from_path(os.path.join(constants.ASSETS_PATH, 'granted_overlay.png'), size=100)
 
         for offer_i, offer_json in enumerate(shop_offers_json):
             item_background_url = offer_json['displayAssets'][0]['background']
@@ -95,32 +94,6 @@ class ShopModule:
 
             #Save Background
             icon_image = image_helper.from_url(item_background_url)
-
-            '''
-            #Granted Items
-            granted_json = offer_json["granted"]
-
-            draw_i = 0
-            for i in range(3):
-                if i >= len(granted_json) - 1:
-                    continue
-
-                try:
-                    granted_item_json = granted_json[i]
-
-                    if not is_bundle and granted_item_json["id"] == main_id:
-                        continue
-                    
-                    icon_image.paste(granted_overlay, (-20, draw_i * 100 - 20), granted_overlay)
-
-                    granted_item_icon_url = granted_item_json['images']['icon']
-                    granted_item_icon = image_helper.from_url(granted_item_icon_url, size=80)
-                    icon_image.paste(granted_item_icon, (0, draw_i * 100), granted_item_icon)
-
-                    draw_i += 1
-                except Exception as e:
-                    print(f"Error while drawing granted item. ({e})")
-            '''
 
             #Overlay
             icon_image.paste(overlay_image, (0, 0), overlay_image)
@@ -166,7 +139,6 @@ class ShopModule:
         rainbow_image.close()
         overlay_image.close()
         new_badge.close()
-        # granted_overlay.close()
 
         print(f'Generated {len(shop_offers_json)} items from the {shop_date} item shop.')
 
