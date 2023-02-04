@@ -31,7 +31,15 @@ def _post_twitter(image, caption):
     email_field.send_keys(constants.TWITTER_EMAIL)
     email_field.submit()
 
-    password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, 'password')))
+    # Security username question
+    try:
+        security_username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')))
+        security_username_field.send_keys(constants.TWITTER_USERNAME)
+        security_username_field.submit()
+    except:
+        pass
+
+    password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')))
     password_field.send_keys(constants.TWITTER_PASSWORD)
     password_field.submit()
 

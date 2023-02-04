@@ -18,6 +18,7 @@ if TWITTER_ENABLED:
 
         TWITTER_API = tweepy.API(_TWITTER_AUTH)
     else:
+        TWITTER_USERNAME = os.getenv("TWITTER_USERNAME")
         TWITTER_EMAIL = os.getenv("TWITTER_EMAIL")
         TWITTER_PASSWORD = os.getenv("TWITTER_PASSWORD")
         
