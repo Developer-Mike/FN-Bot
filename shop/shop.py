@@ -19,6 +19,9 @@ class ShopModule:
     def __init__(self):
         if not os.path.exists(self._RESULT_PATH):
             os.makedirs(self._RESULT_PATH)
+        
+        if os.path.exists(self._TEMP_PATH):
+            os.rmdir(self._TEMP_PATH)
 
     def register(self, schedule):
         schedule.every(1).minutes.do(self.update)

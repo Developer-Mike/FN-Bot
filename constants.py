@@ -10,8 +10,14 @@ LANG = os.getenv("LANG")
 FORTNITEAPI_IO_KEY = os.getenv("FORTNITEAPI_IO_KEY")
 
 TWITTER_ENABLED = os.getenv("TWITTER") in ("true", "1")
+USE_TWITTER_API = os.getenv("USE_TWITTER_API") in ("true", "1")
 if TWITTER_ENABLED:
-    _TWITTER_AUTH = tweepy.OAuthHandler(os.getenv("TWITTER_CONSUMER_KEY"), os.getenv("TWITTER_CONSUMER_SECRET"))
-    _TWITTER_AUTH.set_access_token(os.getenv("TWITTER_ACCESS_TOKEN"), os.getenv("TWITTER_ACCESS_SECRET"))
+    if USE_TWITTER_API:
+        _TWITTER_AUTH = tweepy.OAuthHandler(os.getenv("TWITTER_CONSUMER_KEY"), os.getenv("TWITTER_CONSUMER_SECRET"))
+        _TWITTER_AUTH.set_access_token(os.getenv("TWITTER_ACCESS_TOKEN"), os.getenv("TWITTER_ACCESS_SECRET"))
 
-    TWITTER_API = tweepy.API(_TWITTER_AUTH)
+        TWITTER_API = tweepy.API(_TWITTER_AUTH)
+    else:
+        TWITTER_EMAIL = os.getenv("TWITTER_EMAIL")
+        TWITTER_PASSWORD = os.getenv("TWITTER_PASSWORD")
+        

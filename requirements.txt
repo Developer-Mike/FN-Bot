@@ -2,3 +2,4 @@ tweepy
 pillow
 requests
 schedule
+selenium
