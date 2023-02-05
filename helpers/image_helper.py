@@ -1,12 +1,16 @@
 import requests
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 
 def from_url(url, size=512):
     response = requests.get(f"{url}?width={size}", stream=True)
-    image = Image.open(BytesIO(response.content))
     
-    return image.convert('RGBA').resize((size, size), Image.Resampling.LANCZOS)
+    try: 
+        image = Image.open(BytesIO(response.content))
+        return image.convert('RGBA').resize((size, size), Image.Resampling.LANCZOS)
+    except UnidentifiedImageError:
+        print(f"Error: {url} is not a valid image.")
+        return Image.new('RGBA', (size, size), (0, 0, 0, 0))
 
 def from_path(path, size=512):
     image = Image.open(path).convert('RGBA')

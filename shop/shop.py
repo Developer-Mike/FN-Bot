@@ -19,9 +19,6 @@ class ShopModule:
     def __init__(self):
         if not os.path.exists(self._RESULT_PATH):
             os.makedirs(self._RESULT_PATH)
-        
-        if os.path.exists(self._TEMP_PATH):
-            os.rmdir(self._TEMP_PATH)
 
     def register(self, schedule):
         schedule.every(1).minutes.do(self.update)
@@ -66,7 +63,6 @@ class ShopModule:
         os.mkdir(self._TEMP_PATH)
 
         # Load assets
-        rainbow_image = image_helper.from_path(os.path.join(constants.ASSETS_PATH, 'rainbow.png'))
         overlay_image = image_helper.from_path(os.path.join(constants.ASSETS_PATH, 'overlay.png'))
         new_badge = image_helper.from_path(os.path.join(constants.ASSETS_PATH, "new_badge.png"))
 
@@ -102,7 +98,7 @@ class ShopModule:
             icon_image.paste(overlay_image, (0, 0), overlay_image)
 
             if days_gone is None:
-                icon_image.paste(rainbow_image, (0, 0), rainbow_image)
+                icon_image.paste(new_badge, (0, 0), new_badge)
 
             item_name = offer_json['displayName']
             
@@ -128,10 +124,6 @@ class ShopModule:
             draw = ImageDraw.Draw(icon_image)
             draw.text((256, 505), str(offer_price), font=font, fill='white', anchor='ms') #Writes price of offer
 
-            #New badge
-            if days_gone is None:
-                icon_image.paste(new_badge, (0, 0), new_badge)
-
             section_number = sections[offer_section] if offer_section in sections else len(sections)
 
             #Save image
@@ -139,7 +131,6 @@ class ShopModule:
             icon_image.close()
 
         # Free memory
-        rainbow_image.close()
         overlay_image.close()
         new_badge.close()
 
