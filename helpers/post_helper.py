@@ -2,6 +2,7 @@ import os
 import constants
 
 def post_image(image, caption):
+    print(f"Posting image. ({image}, {caption})")
     if constants.TWITTER_ENABLED:
         print("Posting to Twitter.")
 
