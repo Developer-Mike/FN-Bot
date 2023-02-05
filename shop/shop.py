@@ -92,7 +92,7 @@ class ShopModule:
                 days_gone = None
 
             #Save Background
-            icon_image = image_helper.from_url(item_background_url)
+            icon_image = image_helper.from_url(item_background_url, mode='RGB')
 
             #Overlay
             icon_image.paste(overlay_image, (0, 0), overlay_image)
