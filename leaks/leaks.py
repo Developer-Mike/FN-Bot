@@ -120,9 +120,7 @@ class LeaksModule:
         print(f'Generated images for {len(new_items)} new leaks.')
 
     def _merge_leaks(self, leaks_date):
-        leaks_images_paths = []
-        for filepath in os.listdir(self._TEMP_PATH):
-            leaks_images_paths.append(os.path.join(self._TEMP_PATH, filepath))
+        leaks_images_paths = glob.glob(os.path.join(self._TEMP_PATH, "*.png"))
         leaks_count = len(leaks_images_paths)
             
         column_count = math.ceil(math.sqrt(leaks_count))

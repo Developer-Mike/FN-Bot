@@ -24,13 +24,11 @@ from selenium.webdriver.common.by import By
 
 def _post_twitter(image, caption):
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
 
     driver = webdriver.Chrome(os.path.join(constants.BASE_PATH, "chromedriver.exe"), options=options)
     driver.get("https://twitter.com/i/flow/login")
-
     driver.maximize_window()
-    driver.set_window_position(-1920, 0)
 
     email_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input')))
     email_field.send_keys(constants.TWITTER_EMAIL)

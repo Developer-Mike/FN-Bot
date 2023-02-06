@@ -137,9 +137,7 @@ class ShopModule:
         print(f'Generated {len(shop_offers_json)} items from the {shop_date} item shop.')
 
     def _merge_shop(self):
-        offer_image_paths = []
-        for filepath in os.listdir(self._TEMP_PATH):
-            offer_image_paths.append(os.path.join(self._TEMP_PATH, filepath))
+        offer_image_paths = glob.glob(os.path.join(self._TEMP_PATH, "*.png"))
         offer_count = len(offer_image_paths)
             
         column_count = math.ceil(math.sqrt(offer_count))
