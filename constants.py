@@ -9,6 +9,7 @@ dotenv.load_dotenv(os.path.join(BASE_PATH, ".env"))
 LANG = os.getenv("LANG")
 FORTNITEAPI_IO_KEY = os.getenv("FORTNITEAPI_IO_KEY")
 
+VIRTUAL_DISPLAY = os.getenv("VIRTUAL_DISPLAY") in ("true", "1")
 CHROMEDRIVER_PATH = os.path.join(BASE_PATH, os.getenv("CHROMEDRIVER_PATH"))
 
 TWITTER_ENABLED = os.getenv("TWITTER") in ("true", "1")

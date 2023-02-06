@@ -3,3 +3,4 @@ pillow
 requests
 schedule
 selenium
+pyvirtualdisplay
