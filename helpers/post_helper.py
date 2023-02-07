@@ -1,8 +1,8 @@
 import os
 import constants
 
-def post_image(image, caption):
-    print(f"Posting image. ({image}, {caption})")
+def post(image, caption):
+    print(f"Posting. ({image}, {caption})")
     if constants.TWITTER_ENABLED:
         print("Posting to Twitter.")
 
@@ -12,8 +12,10 @@ def post_image(image, caption):
             _post_twitter(image, caption)
 
 def _post_twitter_api(image, caption):
-    media = constants.TWITTER_API.media_upload(image)
-    constants.TWITTER_API.update_status(caption, media_ids=[media.media_id])
+    if image != None:
+        media = constants.TWITTER_API.media_upload(image)
+
+    constants.TWITTER_API.update_status(caption, media_ids=[media.media_id] if image != None else [])
 
 
 from selenium import webdriver
@@ -53,8 +55,9 @@ def _post_twitter(image, caption):
 
         # Logged in
 
-        post_image_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/input')))
-        post_image_button.send_keys(image)
+        if image != None:
+            post_image_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/input')))
+            post_image_button.send_keys(image)
 
         post_caption_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div')))
         post_caption_button.send_keys(caption.replace("\\n", Keys.ENTER))

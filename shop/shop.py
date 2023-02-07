@@ -21,7 +21,7 @@ class ShopModule:
             os.makedirs(self._RESULT_PATH)
 
     def register(self, schedule):
-        schedule.every(1).minutes.do(self.update)
+        schedule.every(30).minutes.do(self.update)
     
     @exception_helper.catch_exceptions()
     def update(self):
@@ -199,7 +199,7 @@ class ShopModule:
         split_date = shop_date.split('-')
         reformatted_date = f'{split_date[2]}/{split_date[1]}/{split_date[0]}'
 
-        post_helper.post_image(
+        post_helper.post(
             os.path.join(self._RESULT_PATH, f'shop_{shop_date}.jpg'),
             strings_helper.STRINGS["shop_post_caption"].replace('{date}', reformatted_date)
         )

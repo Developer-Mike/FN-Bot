@@ -160,7 +160,7 @@ class LeaksModule:
         split_date = leaks_date.split('-')
         reformatted_date = f'{split_date[2]}/{split_date[1]}/{split_date[0]}'
 
-        post_helper.post_image(
+        post_helper.post(
             os.path.join(self._RESULT_PATH, f'leaks_{leaks_date}.jpg'),
             strings_helper.STRINGS["leaks_post_caption"].replace('{date}', reformatted_date)
         )
