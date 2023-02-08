@@ -7,9 +7,9 @@
 6. Run the main.py file
 
 ## Raspberry pi
-Download chromedriver with `sudo apt-get install chromium-chromedriver`<br>
-Set the CHROMEDRIVER_PATH in the .env file to `/usr/lib/chromium-browser/chromedriver`<br>
-Download pyvirtualdisplay dependencies `sudo apt-get install xvfb xserver-xephyr tigervnc-standalone-server x11-utils gnumeric`<br>
+- Download chromedriver with `sudo apt-get install chromium-chromedriver` (Make sure your chromium is updated `sudo apt install chromium-browser`)
+- Set the CHROMEDRIVER_PATH in the .env file to `/usr/lib/chromium-browser/chromedriver`
+- Download pyvirtualdisplay dependencies `sudo apt-get install xvfb xserver-xephyr tigervnc-standalone-server x11-utils gnumeric`
 
 ## Example results
 ### Shop
@@ -22,7 +22,7 @@ New V-Bucks Missions for STW are available!
 Earn them by completing missions in Save the World.
 
 Stonewood: 0
-Canny Valley: 0
+Canny Valley: 60
 Twine Peaks: 0
 Mild Meadows Venture Zone: 0
 
