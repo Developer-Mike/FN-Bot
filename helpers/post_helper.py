@@ -37,32 +37,32 @@ def _post_twitter(image, caption):
         driver.get("https://twitter.com/i/flow/login")
         driver.maximize_window()
 
-        email_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input')))
+        email_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//input[@type="text"]')))
         email_field.send_keys(constants.TWITTER_EMAIL)
         email_field.send_keys(Keys.ENTER)
 
         # Security username question
         try:
-            security_username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')))
+            security_username_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//input[@type="text"][@autocapitalize="none"]')))
             security_username_field.send_keys(constants.TWITTER_USERNAME)
             security_username_field.send_keys(Keys.ENTER)
         except:
             pass
 
-        password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')))
+        password_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//input[@type="password"]')))
         password_field.send_keys(constants.TWITTER_PASSWORD)
         password_field.send_keys(Keys.ENTER)
 
         # Logged in
 
         if image != None:
-            post_image_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/input')))
+            post_image_button = WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '//input[@type="file"]')))
             post_image_button.send_keys(image)
 
-        post_caption_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div')))
-        post_caption_button.send_keys(caption.replace("\\n", Keys.ENTER))
+        post_caption_textarea = WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '//div[@role="textbox"][@contenteditable="true"]')))
+        post_caption_textarea.send_keys(caption.replace("\\n", Keys.ENTER))
+        driver.implicitly_wait(5)
+        post_caption_textarea.send_keys(Keys.CONTROL, Keys.ENTER)
 
-        post_caption_button.send_keys(Keys.CONTROL, Keys.ENTER)
         driver.implicitly_wait(10)
-
         driver.quit()
