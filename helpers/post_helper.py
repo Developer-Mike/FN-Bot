@@ -10,6 +10,8 @@ def post(image, caption):
             _post_twitter_api(image, caption)
         else:
             _post_twitter(image, caption)
+    
+    print("Post complete.")
 
 def _post_twitter_api(image, caption):
     if image != None:

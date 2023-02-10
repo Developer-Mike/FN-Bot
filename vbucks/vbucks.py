@@ -1,27 +1,42 @@
-import requests
-from datetime import datetime
+import requests, pickle, os
+from datetime import datetime, timedelta
 
 from helpers import exception_helper, post_helper, strings_helper
+import constants
 
 class VBucksModule:
+    _VBUCKS_MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
+    _LAST_POST_PATH = os.path.join(_VBUCKS_MODULE_PATH, "last_post.p")
+
     _STW_WORLD_INFO_URL = "https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/world/info"
     _TOKEN_AUTH_URL = "https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token"
     _FORTNITE_PC_BASE = "ZWM2ODRiOGM2ODdmNDc5ZmFkZWEzY2IyYWQ4M2Y1YzY6ZTFmMzFjMjExZjI4NDEzMTg2MjYyZDM3YTEzZmM4NGQ="
 
     def register(self, schedule):
-        utc_time = "00:10"
-        utc_datetime = datetime.fromisoformat(f"1970-01-01 {utc_time}:00.000+00:00").astimezone()
-        local_time = utc_datetime.strftime("%H:%M")
-
-        schedule.every(1).days.at(local_time).do(self.update)
+        self.schedule = schedule
+        schedule.every(1).days.at(constants.UTC_MIDNIGHT).do(self.update)
     
-    @exception_helper.catch_exceptions()
+    def on_exception(self):
+        self.schedule.every(5).minutes.until(timedelta(minutes=6)).do(self.update)
+    
+    @exception_helper.catch_exceptions(on_exception=on_exception)
     def update(self):
+        date = datetime.now().strftime("%d%m%Y")
+        if self._has_posted_today(date): return
+
         stw_json = self._get_stw_json()
         vbucks_missions = self._get_vbucks_missions(stw_json)
 
         if sum(vbucks_missions.values()) > 0:
             self._post_vbucks_missions(vbucks_missions)
+
+        pickle.dump(date, open(self._LAST_POST_PATH, "wb"))
+
+    def _has_posted_today(self, date):
+        if not os.path.exists(self._LAST_POST_PATH): 
+            return False
+        else: 
+            return pickle.load(open(self._LAST_POST_PATH, "rb")) == date
 
     def _get_stw_json(self):
         headers = {

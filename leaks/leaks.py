@@ -27,19 +27,19 @@ class LeaksModule:
         leaks_json = request_helper.io_request(self._API_LEAKS_URL, {"fields": "id,name,type,images"})
         leaks_date = self._parse_leaks_date(leaks_json)
         new_items = self._get_newly_leaked_items(leaks_json)
+        if len(new_items) == 0: return
 
-        if len(new_items) > 0:
-            print("New leaks detected!")
+        print("New leaks detected!")
 
-            self._generate_icons(leaks_json, new_items)
-            self._merge_leaks(leaks_date)
-            
-            print("Leaks image generated successfully!")
-            shutil.rmtree(self._TEMP_PATH)
+        self._generate_icons(leaks_json, new_items)
+        self._merge_leaks(leaks_date)
+        
+        print("Leaks image generated successfully!")
+        shutil.rmtree(self._TEMP_PATH)
 
-            self._post_image(leaks_date)
-            
-            pickle.dump(new_items, open(self._LAST_LEAKS_LIST_PATH, "wb"))
+        self._post_image(leaks_date)
+        
+        pickle.dump(new_items, open(self._LAST_LEAKS_LIST_PATH, "wb"))
 
     def _parse_leaks_date(self, leaks_json):
         return leaks_json['lastUpdate']['date'][:10]

@@ -1,6 +1,6 @@
 import os, shutil, math, pickle, time, glob
 from PIL import Image, ImageFont, ImageDraw
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from helpers import exception_helper, image_helper, request_helper, post_helper, strings_helper
 import constants
@@ -21,27 +21,31 @@ class ShopModule:
             os.makedirs(self._RESULT_PATH)
 
     def register(self, schedule):
-        schedule.every(30).minutes.do(self.update)
+        self.schedule = schedule
+        schedule.every(1).days.at(constants.UTC_MIDNIGHT).do(self.update)
+
+    def on_exception(self):
+        self.schedule.every(5).minutes.until(timedelta(minutes=6)).do(self.update)
     
-    @exception_helper.catch_exceptions()
+    @exception_helper.catch_exceptions(on_exception=on_exception)
     def update(self):
         shop_json = request_helper.io_request(self._API_SHOP_URL, {"fields": "id,name,shopHistory,images"})
         shop_date = self._parse_shop_date(shop_json)
         shop_uid = shop_json['lastUpdate']['uid']
+        if not self._has_new_shop(shop_uid): return
 
-        if self._has_new_shop(shop_uid):
-            print("New shop detected!")
+        print("New shop detected!")
 
-            self._generate_icons(shop_json, shop_date)
-            shop_image = self._merge_shop()
-            self._compress_image(shop_image, shop_date)
-            
-            print("Shop generated successfully!")
-            shutil.rmtree(self._TEMP_PATH)
+        self._generate_icons(shop_json, shop_date)
+        shop_image = self._merge_shop()
+        self._compress_image(shop_image, shop_date)
+        
+        print("Shop generated successfully!")
+        shutil.rmtree(self._TEMP_PATH)
 
-            self._post_image(shop_date)
-            
-            pickle.dump(shop_uid, open(self._LAST_SHOP_UID_PATH, "wb"))
+        self._post_image(shop_date)
+        
+        pickle.dump(shop_uid, open(self._LAST_SHOP_UID_PATH, "wb"))
         
     def _parse_shop_date(self, shop_json):
         return shop_json['lastUpdate']['date'][:10]

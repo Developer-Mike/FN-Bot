@@ -1,8 +1,11 @@
 import os, dotenv, tweepy
+from datetime import datetime
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 ASSETS_PATH = os.path.join(BASE_PATH, "assets")
 FONT_PATH = os.path.join(ASSETS_PATH, "Burbank.otf")
+
+UTC_MIDNIGHT = datetime.fromisoformat(f"1970-01-01 00:10:00.000+00:00").astimezone().strftime("%H:%M")
 
 dotenv.load_dotenv(os.path.join(BASE_PATH, ".env"))
 
