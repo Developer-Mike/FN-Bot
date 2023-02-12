@@ -8,7 +8,7 @@
 
 ## Raspberry pi
 - Download chromedriver with `sudo apt-get install chromium-chromedriver` (Make sure your chromium is updated `sudo apt install chromium-browser`)
-- Set the CHROMEDRIVER_PATH in the .env file to `/usr/lib/chromium-browser/chromedriver`
+- Set the `CHROMEDRIVER_PATH` in the .env file to `/usr/lib/chromium-browser/chromedriver`
 - Download pyvirtualdisplay dependencies `sudo apt-get install xvfb xserver-xephyr tigervnc-standalone-server x11-utils gnumeric`
 - To run use `nohup python -u main.py & disown`
 
