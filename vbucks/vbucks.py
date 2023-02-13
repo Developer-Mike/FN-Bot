@@ -63,11 +63,13 @@ class VBucksModule:
         for mission_alert_group in stw_json["missionAlerts"]:
             theather_name, is_hidden = self._get_theater_info(stw_json, mission_alert_group["theaterId"])
             if is_hidden: continue
-            vbucks_missions[theather_name] = 0
 
             for mission_alert in mission_alert_group["availableMissionAlerts"]:
                 for mission_reward in mission_alert["missionAlertRewards"]["items"]:
                     if mission_reward["itemType"] == "AccountResource:currency_mtxswap":
+                        if theather_name not in vbucks_missions:
+                            vbucks_missions[theather_name] = 0
+
                         vbucks_missions[theather_name] += mission_reward["quantity"]
         
         return vbucks_missions
