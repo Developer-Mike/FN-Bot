@@ -32,7 +32,7 @@ class ShopModule:
         shop_json = request_helper.io_request(self._API_SHOP_URL, {"fields": "id,name,shopHistory,images"})
         shop_date = self._parse_shop_date(shop_json)
         shop_uid = shop_json['lastUpdate']['uid']
-        if not self._has_new_shop(shop_uid): return
+        if not self._has_new_shop(shop_uid): raise Exception("No new shop detected")
 
         print("New shop detected!")
 
