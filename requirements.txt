@@ -2,7 +2,7 @@ tweepy
 pillow
 requests
 schedule
-selenium
-pyvirtualdisplay
 pyyaml
 python-dotenv
+selenium
+pyvirtualdisplay
