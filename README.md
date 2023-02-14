@@ -20,12 +20,8 @@
 ### V-Bucks
 ```
 New V-Bucks Missions for STW are available!
-Earn them by completing missions in Save the World.
 
-Stonewood: 0
 Canny Valley: 60
-Twine Peaks: 0
-Mild Meadows Venture Zone: 0
 
 #Fortnite
 ```
