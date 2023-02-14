@@ -39,7 +39,8 @@ class LeaksModule:
 
         self._post_image(leaks_date)
         
-        pickle.dump(new_items, open(self._LAST_LEAKS_LIST_PATH, "wb"))
+        all_items = list(map(lambda x: x["id"], leaks_json["items"]))
+        pickle.dump(all_items, open(self._LAST_LEAKS_LIST_PATH, "wb"))
 
     def _parse_leaks_date(self, leaks_json):
         return leaks_json['lastUpdate']['date'][:10]

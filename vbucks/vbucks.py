@@ -1,5 +1,5 @@
-import requests, pickle, os
-from datetime import datetime, timedelta
+import requests
+from datetime import timedelta
 
 from helpers import exception_helper, post_helper, strings_helper
 import constants
