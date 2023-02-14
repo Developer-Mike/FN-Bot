@@ -9,7 +9,7 @@ for module in modules:
     module.register(schedule)
     print("Initialized module: " + module.__class__.__name__)
     
-schedule.run_all()
+# schedule.run_all()
 
 while True:
     schedule.run_pending()
