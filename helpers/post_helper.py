@@ -3,6 +3,8 @@ import constants
 
 def post(image, caption):
     print(f"Posting. ({image}, {caption})")
+    caption = caption.replace("\\n", "\n")
+
     if constants.TWITTER_ENABLED:
         print("Posting to Twitter.")
 
@@ -60,7 +62,7 @@ def _post_twitter(image, caption):
             post_image_button.send_keys(image)
 
         post_caption_textarea = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, '//div[@role="textbox"][@contenteditable="true"]')))
-        post_caption_textarea.send_keys(caption.replace("\\n", Keys.ENTER))
+        post_caption_textarea.send_keys(caption.replace("\n", Keys.ENTER))
         driver.implicitly_wait(5)
         post_caption_textarea.send_keys(Keys.CONTROL, Keys.ENTER)
 
