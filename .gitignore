@@ -3,6 +3,7 @@
 __pycache__/
 .vscode/
 
+old.zip
 temp/
 result/
 *.p
