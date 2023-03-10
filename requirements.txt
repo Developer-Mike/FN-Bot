@@ -4,5 +4,3 @@ requests
 schedule
 pyyaml
 python-dotenv
-selenium
-pyvirtualdisplay

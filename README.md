@@ -9,8 +9,10 @@
 `nohup python -u main.py & disown`
 
 ## Twitter without API
-1. Install chromedriver.exe from https://chromedriver.chromium.org/downloads
+1. Install selenium `pip install selenium`
+2. Install chromedriver.exe from https://chromedriver.chromium.org/downloads
 #### On Raspberry pi
+- Install pyvirtualdisplay `pip install pyvirtualdisplay`
 - Download chromedriver with `sudo apt-get install chromium-chromedriver` (Make sure your chromium is updated `sudo apt install chromium-browser`)
 - Set the `CHROMEDRIVER_PATH` in the .env file to `/usr/lib/chromium-browser/chromedriver`
 - Download pyvirtualdisplay dependencies `sudo apt-get install xvfb xserver-xephyr tigervnc-standalone-server x11-utils gnumeric`
