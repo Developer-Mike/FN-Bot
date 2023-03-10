@@ -9,7 +9,7 @@ UTC_MIDNIGHT = datetime.fromisoformat(f"1970-01-01 00:01:00.000+00:00").astimezo
 
 dotenv.load_dotenv(os.path.join(BASE_PATH, ".env"))
 
-LANG = os.getenv("LANG")
+LANG = os.getenv("LANGUAGE")
 FORTNITEAPI_IO_KEY = os.getenv("FORTNITEAPI_IO_KEY")
 CONTINUE_ON_CORRUPTED_IMAGE = os.getenv("CONTINUE_ON_CORRUPTED_IMAGE") in ("true", "1")
 

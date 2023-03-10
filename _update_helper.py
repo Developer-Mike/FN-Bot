@@ -1,5 +1,4 @@
-import requests, zipfile, io, os, shutil, glob, re, tempfile
-from dotenv import load_dotenv
+import requests, zipfile, io, os, shutil, glob, tempfile, dotenv
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(CURRENT_DIR)
@@ -12,7 +11,9 @@ DOT_ENV_PATH = os.path.join(CURRENT_DIR, ".env")
 GITHUB_REPO_URL = "https://github.com/Developer-Mike/FN-Bot/archive/refs/heads/main.zip"
 
 # Backup files
-shutil.rmtree(BACKUP_ZIP_PATH, ignore_errors=True)
+if os.path.exists(BACKUP_ZIP_PATH):
+    os.remove(BACKUP_ZIP_PATH)
+
 with tempfile.TemporaryDirectory() as temp_dir:
     BACKUP_ZIP_TEMP_PATH = shutil.make_archive(os.path.join(temp_dir, "old"), "zip", CURRENT_DIR)
     shutil.move(BACKUP_ZIP_TEMP_PATH, BACKUP_ZIP_PATH)
@@ -54,17 +55,24 @@ for source_path in glob.glob(os.path.join(NEW_DIR, "**"), recursive=True):
     shutil.copy(source_path, target_path)
 
 # Update env file
+if os.path.exists(OLD_DOT_ENV_PATH): os.remove(OLD_DOT_ENV_PATH) 
 os.rename(DOT_ENV_PATH, OLD_DOT_ENV_PATH)
-OLD_DOT_ENV = load_dotenv(OLD_DOT_ENV_PATH)
+
+dotenv.load_dotenv(OLD_DOT_ENV_PATH)
 shutil.move(TEMPLATE_DOT_ENV_PATH, DOT_ENV_PATH)
 
-with open(DOT_ENV_PATH, "rw") as env_file:
-    new_env = env_file.read()
+with open(DOT_ENV_PATH, "r") as env_file:
+    new_env = env_file.readlines()
 
-    for key, value in OLD_DOT_ENV.items():
-        new_env = re.sub(f"{key}=*\n", f"{key}={value}\n", new_env)
+with open(DOT_ENV_PATH, "w") as env_file:
+    for i, line in enumerate(new_env):
+        if line.startswith("#") or line == "":
+            continue
+        key = line.split("=")[0]
 
-    env_file.write(new_env)
+        if key in os.environ:
+            new_env[i] = f"{key}={os.environ[key]}\n"
 
-shutil.rmtree(OLD_DOT_ENV)
+    env_file.write("".join(new_env))
+
 shutil.rmtree(TEMP_DIR)
