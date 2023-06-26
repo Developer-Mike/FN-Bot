@@ -1,0 +1,6 @@
+tweepy
+pillow
+requests
+schedule
+pyyaml
+python-dotenv

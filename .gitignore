@@ -1,0 +1,11 @@
+.env
+
+__pycache__/
+.vscode/
+
+old.zip
+temp/
+result/
+*.p
+
+chromedriver.exe
