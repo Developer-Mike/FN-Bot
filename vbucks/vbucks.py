@@ -1,7 +1,7 @@
 import requests
 from datetime import timedelta
 
-from helpers import exception_helper, post_helper, strings_helper
+from bot_helpers import exception_helper, post_helper, strings_helper
 import constants
 
 class VBucksModule:
