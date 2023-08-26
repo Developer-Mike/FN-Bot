@@ -2,7 +2,7 @@ import os, shutil, math, pickle, time, glob
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 
-from bot_helpers import exception_helper, image_helper, request_helper, post_helper, strings_helper
+from bot_helpers import exception_helper, image_helper, request_helper, post_helper, strings_helper, rarity_helper
 import constants
 
 class LeaksModule:
@@ -24,7 +24,7 @@ class LeaksModule:
     
     @exception_helper.catch_exceptions()
     def update(self):
-        leaks_json = request_helper.io_request(self._API_LEAKS_URL, {"fields": "id,name,type,images"})
+        leaks_json = request_helper.io_request(self._API_LEAKS_URL, {"fields": "id,name,type,images,rarity,series"})
         leaks_date = self._parse_leaks_date(leaks_json)
         new_items = self._get_newly_leaked_items(leaks_json)
         if len(new_items) == 0: return
@@ -77,8 +77,13 @@ class LeaksModule:
                 continue
 
             # Item Image
-            item_background_url = leak_item['images']['background']
-            icon_image = image_helper.from_url(item_background_url, mode='RGB')
+            item_icon = image_helper.from_url(leak_item['images']['icon'])
+
+            rarity_id = leak_item['rarity']['id']
+            if leak_item['series'] is not None: rarity_id = leak_item['series']['id']
+            item_background = rarity_helper.get_background(rarity_id)
+
+            icon_image = image_helper.with_background(item_icon, item_background)
 
             #Overlay
             icon_image.paste(overlay_image, (0, 0), overlay_image)

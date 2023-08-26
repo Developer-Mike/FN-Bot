@@ -8,8 +8,9 @@ modules = [ShopModule(), LeaksModule(), VBucksModule()]
 for module in modules:
     module.register(schedule)
     print("Initialized module: " + module.__class__.__name__)
-    
-# schedule.run_all()
+print("All modules initialized. Waiting for updates...")
+
+schedule.run_all()
 
 while True:
     schedule.run_pending()

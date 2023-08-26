@@ -2,7 +2,7 @@ import os, shutil, math, pickle, time, glob
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime, timedelta
 
-from bot_helpers import exception_helper, image_helper, request_helper, post_helper, strings_helper
+from bot_helpers import exception_helper, image_helper, request_helper, post_helper, strings_helper, rarity_helper
 import constants
 
 class ShopModule:
@@ -71,7 +71,16 @@ class ShopModule:
         new_badge = image_helper.from_path(os.path.join(constants.ASSETS_PATH, "new_badge.png"))
 
         for offer_i, offer_json in enumerate(shop_offers_json):
-            item_background_url = offer_json['displayAssets'][0]['background']
+            display_asset = offer_json['displayAssets'][0]
+            item_icon = image_helper.from_url(display_asset['url'])
+
+            item_background_url = display_asset["background_texture"]
+            if item_background_url is None:
+                rarity_id = offer_json['rarity']['id']
+                if offer_json['series'] is not None: rarity_id = offer_json['series']['id']
+                item_background = rarity_helper.get_background(rarity_id)
+            else:
+                item_background = image_helper.from_url(item_background_url)
 
             is_bundle = offer_json['mainType'] == "bundle"
             main_id = ("bundle_" if is_bundle else "") + offer_json['mainId']
@@ -96,7 +105,7 @@ class ShopModule:
                 days_gone = None
 
             #Save Background
-            icon_image = image_helper.from_url(item_background_url, mode='RGB')
+            icon_image = image_helper.with_background(item_icon, item_background)
 
             #Overlay
             icon_image.paste(overlay_image, (0, 0), overlay_image)

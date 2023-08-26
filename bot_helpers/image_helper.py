@@ -18,6 +18,11 @@ def from_url(url, size=512, mode='RGBA'):
 
         return Image.new(mode, (size, size), (0, 0, 0, 0))
 
+def with_background(image, background):
+    background = background.resize(image.size)
+    background.paste(image, (0, 0), image)
+    return background
+
 def from_path(path, size=512):
     image = Image.open(path).convert('RGBA')
 
