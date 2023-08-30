@@ -74,7 +74,7 @@ class ShopModule:
             display_asset = offer_json['displayAssets'][0]
             item_icon = image_helper.from_url(display_asset['url'])
 
-            item_background_url = display_asset["background_texture"]
+            item_background_url = display_asset.get("background_texture")
             if item_background_url is None:
                 rarity_id = offer_json['rarity']['id']
                 if offer_json['series'] is not None: rarity_id = offer_json['series']['id']
