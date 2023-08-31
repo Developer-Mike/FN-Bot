@@ -148,7 +148,7 @@ class LeaksModule:
         
         #Credits
         try:
-            credit_images = glob.glob(os.path.join(constants.ASSETS_PATH, "ads/*.png"))
+            credit_images = sorted(glob.glob(os.path.join(constants.ASSETS_PATH, "ads/*.png")))
             spare_cells = column_count ** 2 - leaks_count
             for i in range(spare_cells):
                 if i >= len(credit_images):
