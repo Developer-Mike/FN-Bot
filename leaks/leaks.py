@@ -126,7 +126,7 @@ class LeaksModule:
         print(f'Generated images for {len(new_items)} new leaks.')
 
     def _merge_leaks(self, leaks_date):
-        leaks_images_paths = glob.glob(os.path.join(self._TEMP_PATH, "*.png"))
+        leaks_images_paths = sorted(glob.glob(os.path.join(self._TEMP_PATH, "*.png")))
         leaks_count = len(leaks_images_paths)
             
         column_count = math.ceil(math.sqrt(leaks_count))
@@ -137,7 +137,7 @@ class LeaksModule:
         leaks_image.paste(leaks_background, (0, 0))
         leaks_background.close() # Free memory
 
-        for i, leaks_image_path in enumerate(sorted(leaks_images_paths)):
+        for i, leaks_image_path in enumerate(leaks_images_paths):
             item_image = image_helper.from_path(leaks_image_path, size=self._LEAKED_ITEM_IMAGE_SIZE)
             leaks_image.paste(
                 item_image,

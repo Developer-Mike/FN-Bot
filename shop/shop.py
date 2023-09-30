@@ -150,7 +150,7 @@ class ShopModule:
         print(f'Generated {len(shop_offers_json)} items from the {shop_date} item shop.')
 
     def _merge_shop(self):
-        offer_image_paths = glob.glob(os.path.join(self._TEMP_PATH, "*.png"))
+        offer_image_paths = sorted(glob.glob(os.path.join(self._TEMP_PATH, "*.png")))
         offer_count = len(offer_image_paths)
             
         column_count = math.ceil(math.sqrt(offer_count))
@@ -164,7 +164,7 @@ class ShopModule:
         shop_image.paste(shop_background, (0, 0))
         shop_background.close() # Free memory
 
-        for i, offer_image_path in enumerate(sorted(offer_image_paths)):
+        for i, offer_image_path in enumerate(offer_image_paths):
             offer_image = image_helper.from_path(offer_image_path, size=offer_image_size)
             shop_image.paste(
                 offer_image,
