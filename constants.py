@@ -13,6 +13,7 @@ dotenv.load_dotenv(os.path.join(BASE_PATH, ".env"))
 LANG = os.getenv("LANGUAGE")
 FORTNITEAPI_IO_KEY = os.getenv("FORTNITEAPI_IO_KEY")
 CONTINUE_ON_CORRUPTED_IMAGE = os.getenv("CONTINUE_ON_CORRUPTED_IMAGE") in ("true", "1")
+FALLBACK_IMAGE_FROM_FORTNITE_API = os.getenv("FALLBACK_IMAGE_FROM_FORTNITE_API") in ("true", "1")
 
 TWITTER_ENABLED = os.getenv("TWITTER_ENABLED") in ("true", "1")
 TWITTER_API = tweepy.Client(

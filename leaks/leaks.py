@@ -77,11 +77,11 @@ class LeaksModule:
                 continue
 
             # Item Image
-            item_icon = image_helper.from_url(leak_item['images']['icon'])
+            item_icon = image_helper.get_item_image(leak_item['images']['icon'], item_id)
 
             rarity_id = leak_item['rarity']['id']
-            if leak_item['series'] is not None: rarity_id = leak_item['series']['id']
-            item_background = rarity_helper.get_background(rarity_id)
+            series_id = (leak_item.get('series') or {}).get('id', None)
+            item_background = rarity_helper.get_background(rarity_id, series_id)
 
             icon_image = image_helper.with_background(item_icon, item_background)
 

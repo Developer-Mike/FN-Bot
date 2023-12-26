@@ -58,7 +58,7 @@ class ShopModule:
         return last_shop_uid != shop_uid
 
     def _generate_icons(self, shop_json, shop_date):
-        sections = {section:i for i, section in enumerate(shop_json["currentRotation"].keys())}
+        sections = list(shop_json["currentRotation"].keys())
         shop_offers_json = shop_json['shop']
 
         # Create temp folder
@@ -71,17 +71,6 @@ class ShopModule:
         new_badge = image_helper.from_path(os.path.join(constants.ASSETS_PATH, "new_badge.png"))
 
         for offer_i, offer_json in enumerate(shop_offers_json):
-            display_asset = offer_json['displayAssets'][0]
-            item_icon = image_helper.from_url(display_asset['url'])
-
-            item_background_url = display_asset.get("background_texture")
-            if item_background_url is None:
-                rarity_id = offer_json['rarity']['id']
-                if offer_json['series'] is not None: rarity_id = offer_json['series']['id']
-                item_background = rarity_helper.get_background(rarity_id)
-            else:
-                item_background = image_helper.from_url(item_background_url)
-
             is_bundle = offer_json['mainType'] == "bundle"
             main_id = ("bundle_" if is_bundle else "") + offer_json['mainId']
             offer_price = offer_json['price']['finalPrice']
@@ -103,6 +92,17 @@ class ShopModule:
                 days_gone = seen_diff.days
             else:
                 days_gone = None
+
+            display_asset = offer_json['displayAssets'][0]
+            item_icon = image_helper.get_item_image(display_asset['url'], main_id)
+
+            item_background_url = display_asset.get("background_texture")
+            if item_background_url is None:
+                rarity_id = offer_json['rarity']['id']
+                series_id = (offer_json.get('series') or {}).get('id', None)
+                item_background = rarity_helper.get_background(rarity_id, series_id)
+            else:
+                item_background = image_helper.from_url(item_background_url)
 
             #Save Background
             icon_image = image_helper.with_background(item_icon, item_background)
@@ -137,7 +137,7 @@ class ShopModule:
             draw = ImageDraw.Draw(icon_image)
             draw.text((256, 505), str(offer_price), font=font, fill='white', anchor='ms') #Writes price of offer
 
-            section_number = sections[offer_section] if offer_section in sections else len(sections)
+            section_number = sections.index(offer_section) if offer_section in sections else len(sections)
 
             #Save image
             icon_image.save(os.path.join(self._TEMP_PATH, f'{section_number}_{offer_i}_{main_id}.png'))

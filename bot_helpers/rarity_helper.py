@@ -21,5 +21,13 @@ RARITY_COLORS = {
     "ColumbusSeries": "https://media.fortniteapi.io/images/rarities/v2/ColumbusSeries.png"
 }
 
-def get_background(rarity):
-    return image_helper.from_url(RARITY_COLORS[rarity], mode='RGB')
+def get_background(rarity_id, series_id):
+    background_url = RARITY_COLORS.get(series_id, None)
+
+    if background_url is None:
+        background_url = RARITY_COLORS.get(rarity_id, None)
+
+        if background_url is None:
+            background_url = RARITY_COLORS[RARITY_COLORS.keys()[0]]
+
+    return image_helper.from_url(background_url, mode='RGB')
