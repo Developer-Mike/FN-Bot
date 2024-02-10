@@ -15,4 +15,6 @@ def post(image, caption, response_to={}):
 
 def _post_twitter_api(image, caption, response_to=None):
     media_ids = [constants.TWITTER_API_V1.media_upload(image).media_id] if image != None else None
-    constants.TWITTER_API.create_tweet(text=caption, media_ids=media_ids, in_reply_to_tweet_id=response_to)
+    tweet = constants.TWITTER_API.create_tweet(text=caption, media_ids=media_ids, in_reply_to_tweet_id=response_to)
+
+    return tweet.data.get("id")
