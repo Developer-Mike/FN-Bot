@@ -76,7 +76,7 @@ class ShopModule:
             offer_price = offer_json['price']['finalPrice']
             offer_section = offer_json['section']['id']
 
-            shop_history = offer_json['granted'][0]['shopHistory']
+            shop_history = offer_json['granted'][0]['shopHistory'] if len(offer_json['granted']) > 0 else []
 
             last_seen = None
             if shop_history is not None and len(shop_history) >= 2:
@@ -93,7 +93,7 @@ class ShopModule:
             else:
                 days_gone = None
 
-            display_asset = offer_json['displayAssets'][0]
+            display_asset = offer_json['displayAssets'][0] if len(offer_json['displayAssets']) > 0 else None
             item_icon = image_helper.get_item_image(display_asset['url'], main_id)
 
             item_background_url = display_asset.get("background_texture")
