@@ -1,4 +1,4 @@
-import requests
+import requests, os, time
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 
@@ -55,3 +55,21 @@ def from_path(path, size=512):
         return image.resize((size, size), Image.Resampling.LANCZOS)
     else:
         return image
+    
+def compress_image(image, save_path):
+        image.save(save_path, optimize=True, quality=85)
+
+        current_size = (image.width, image.height)
+        size_step = 250
+        size_limit = 3000000
+
+        start_time = time.time()
+        while os.path.getsize(save_path) > size_limit:
+            image = image.resize(current_size, Image.Resampling.LANCZOS)
+            image.save(save_path, optimize=True, quality=85)
+
+            current_size[0] -= size_step
+            current_size[1] -= size_step
+
+        image.close() # Free memory
+        print(f"Compressed image to {os.path.getsize(save_path)} bytes. Took {round(time.time() - start_time, 2)} seconds.")

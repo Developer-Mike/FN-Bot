@@ -1,6 +1,9 @@
 import os, dotenv, tweepy
 from datetime import datetime
 
+def _get_env_bool(env_name):
+    return os.getenv(env_name) in ("true", "1")
+
 BASE_PATH = os.path.realpath(os.path.abspath(os.path.dirname(__file__)))
 ASSETS_PATH = os.path.join(BASE_PATH, "assets")
 print(f"Assets path: {ASSETS_PATH}")
@@ -12,10 +15,13 @@ dotenv.load_dotenv(os.path.join(BASE_PATH, ".env"))
 
 LANG = os.getenv("LANGUAGE")
 FORTNITEAPI_IO_KEY = os.getenv("FORTNITEAPI_IO_KEY")
-CONTINUE_ON_CORRUPTED_IMAGE = os.getenv("CONTINUE_ON_CORRUPTED_IMAGE") in ("true", "1")
-FALLBACK_IMAGE_FROM_FORTNITE_API = os.getenv("FALLBACK_IMAGE_FROM_FORTNITE_API") in ("true", "1")
+CONTINUE_ON_CORRUPTED_IMAGE = _get_env_bool("CONTINUE_ON_CORRUPTED_IMAGE")
+FALLBACK_IMAGE_FROM_FORTNITE_API = _get_env_bool("FALLBACK_IMAGE_FROM_FORTNITE_API")
 
-TWITTER_ENABLED = os.getenv("TWITTER_ENABLED") in ("true", "1")
+POST_RETURNING_ITEMS_AS_RESPONSE = _get_env_bool("POST_RETURNING_ITEMS_AS_RESPONSE")
+RETURNING_ITEM_DAY_THRESHOLD = int(os.getenv("RETURNING_ITEM_DAY_THRESHOLD"))
+
+TWITTER_ENABLED = _get_env_bool("TWITTER_ENABLED")
 TWITTER_API = tweepy.Client(
     bearer_token=os.getenv("TWITTER_BEARER_TOKEN"),
     consumer_key=os.getenv("TWITTER_CONSUMER_KEY"),
