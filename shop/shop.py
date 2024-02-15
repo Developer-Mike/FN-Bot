@@ -48,7 +48,7 @@ class ShopModule:
         post_ids = self._post_image(shop_image_path, shop_date)
         pickle.dump(shop_uid, open(self._LAST_SHOP_UID_PATH, "wb"))
 
-        if constants.POST_RETURNING_ITEMS_AS_RESPONSE:
+        if constants.POST_RETURNING_ITEMS_AS_RESPONSE and len(returning_items_files) > 0:
             returning_items_image_path = os.path.join(self._RESULT_PATH, f'returning_items_{shop_date}.jpg')
 
             returning_items_image = self._merge_returning_items(returning_items_files)
@@ -106,7 +106,9 @@ class ShopModule:
             else:
                 days_gone = None
 
-            display_asset = offer_json['displayAssets'][0] if len(offer_json['displayAssets']) > 0 else None
+            # Try to get the Battle Royale display asset, if not, get the first one
+            display_asset = next((display_asset for display_asset in offer_json['displayAssets'] if display_asset['primaryMode'] == 'BattleRoyale'), offer_json['displayAssets'][0]) \
+                                    if len(offer_json['displayAssets']) > 0 else None
             item_icon = image_helper.get_item_image(display_asset['url'], main_id)
 
             item_background_url = display_asset.get("background_texture")

@@ -11,6 +11,10 @@
 ## Example results
 ### Shop
 ![Shop](https://raw.githubusercontent.com/Developer-Mike/FN-Bot/main/example_results/shop.jpg)
+
+#### Reply to the tweet with an image of returning items
+You can enable it in the .env file (`POST_RETURNING_ITEMS_AS_RESPONSE`)
+
 ### Leaks
 ![Leaks](https://raw.githubusercontent.com/Developer-Mike/FN-Bot/main/example_results/leaks.jpg)
 ### V-Bucks
