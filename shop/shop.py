@@ -7,6 +7,7 @@ import constants
 
 class ShopModule:
     _SHOP_IMAGE_WIDTH = 3000
+    _RETURNING_ITEMS_IMAGE_WIDTH = 3000
 
     _SHOP_MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
     _TEMP_PATH = os.path.join(_SHOP_MODULE_PATH, "temp")
@@ -36,17 +37,28 @@ class ShopModule:
 
         print("New shop detected!")
 
-        self._generate_icons(shop_json, shop_date)
+        shop_image_path = os.path.join(self._RESULT_PATH, f'shop_{shop_date}.jpg')
+
+        returning_items_files = self._generate_icons(shop_json, shop_date)
         shop_image = self._merge_shop()
-        self._compress_image(shop_image, shop_date)
+        image_helper.compress_image(shop_image, shop_image_path)
         
         print("Shop generated successfully!")
+
+        post_ids = self._post_image(shop_image_path, shop_date)
+        pickle.dump(shop_uid, open(self._LAST_SHOP_UID_PATH, "wb"))
+
+        if constants.POST_RETURNING_ITEMS_AS_RESPONSE:
+            returning_items_image_path = os.path.join(self._RESULT_PATH, f'returning_items_{shop_date}.jpg')
+
+            returning_items_image = self._merge_returning_items(returning_items_files)
+            image_helper.compress_image(returning_items_image, returning_items_image_path)
+
+            self._post_returning_items_image(returning_items_image_path, post_ids)
+
+        # Remove temp files
         shutil.rmtree(self._TEMP_PATH)
 
-        self._post_image(shop_date)
-        
-        pickle.dump(shop_uid, open(self._LAST_SHOP_UID_PATH, "wb"))
-        
     def _parse_shop_date(self, shop_json):
         return shop_json['lastUpdate']['date'][:10]
 
@@ -58,6 +70,7 @@ class ShopModule:
         return last_shop_uid != shop_uid
 
     def _generate_icons(self, shop_json, shop_date):
+        returning_items_files = []
         sections = list(shop_json["currentRotation"].keys())
         shop_offers_json = shop_json['shop']
 
@@ -128,10 +141,13 @@ class ShopModule:
             info_text = strings_helper.STRINGS["new_item"]
             if days_gone is not None:
                 info_text = strings_helper.STRINGS["item_gone_duration"].replace("{days}", str(days_gone))
+            days_gone_text_color = (255, 255, 255) \
+                if days_gone is None or days_gone < constants.RETURNING_ITEM_DAY_THRESHOLD \
+            else self._RETURN_COLOR
 
             font = ImageFont.truetype(constants.FONT_PATH, 33)
             draw = ImageDraw.Draw(icon_image)
-            draw.text((256, 463), info_text, font=font, fill=((255, 255, 255) if days_gone is None or days_gone < 100 else self._RETURN_COLOR), anchor='ms') #Writes info text / date last seen
+            draw.text((256, 463), info_text, font=font, fill=days_gone_text_color, anchor='ms') #Writes info text / date last seen
 
             font = ImageFont.truetype(constants.FONT_PATH, 40)
             draw = ImageDraw.Draw(icon_image)
@@ -140,14 +156,19 @@ class ShopModule:
             section_number = sections.index(offer_section) if offer_section in sections else len(sections)
 
             #Save image
-            icon_image.save(os.path.join(self._TEMP_PATH, f'{section_number}_{offer_i}_{main_id}.png'))
+            item_file_name = f'{section_number}_{offer_i}_{main_id}.png'
+            icon_image.save(os.path.join(self._TEMP_PATH, item_file_name))
             icon_image.close()
+
+            if days_gone is not None and days_gone >= constants.RETURNING_ITEM_DAY_THRESHOLD:
+                returning_items_files.append(item_file_name)
 
         # Free memory
         overlay_image.close()
         new_badge.close()
 
         print(f'Generated {len(shop_offers_json)} items from the {shop_date} item shop.')
+        return returning_items_files
 
     def _merge_shop(self):
         offer_image_paths = sorted(glob.glob(os.path.join(self._TEMP_PATH, "*.png")))
@@ -189,30 +210,43 @@ class ShopModule:
 
         return shop_image
 
-    def _compress_image(self, image, shop_date):
-        save_path = os.path.join(self._RESULT_PATH, f'shop_{shop_date}.jpg')
-        image.save(save_path, optimize=True, quality=85)
-
-        current_size = (image.width, image.height)
-        size_step = 250
-        size_limit = 3000000
-
-        start_time = time.time()
-        while os.path.getsize(save_path) > size_limit:
-            image = image.resize(current_size, Image.Resampling.LANCZOS)
-            image.save(save_path, optimize=True, quality=85)
-
-            current_size[0] -= size_step
-            current_size[1] -= size_step
-
-        image.close() # Free memory
-        print(f"Compressed image to {os.path.getsize(save_path)} bytes. Took {round(time.time() - start_time, 2)} seconds.")
-
-    def _post_image(self, shop_date):
+    def _post_image(self, image_path, shop_date):
         split_date = shop_date.split('-')
         reformatted_date = f'{split_date[2]}/{split_date[1]}/{split_date[0]}'
 
-        post_helper.post(
-            os.path.join(self._RESULT_PATH, f'shop_{shop_date}.jpg'),
+        return post_helper.post(
+            image_path,
             strings_helper.STRINGS["shop_post_caption"].replace('{date}', reformatted_date)
+        )
+    
+    def _merge_returning_items(self, returning_items_files):
+        column_count = math.ceil(math.sqrt(len(returning_items_files)))
+        row_count = math.ceil(len(returning_items_files) / column_count)
+
+        item_image_size = self._RETURNING_ITEMS_IMAGE_WIDTH // column_count
+        returning_items_image_size = (item_image_size * column_count, item_image_size * row_count)
+
+        returning_items_image = Image.new("RGB", returning_items_image_size)
+        background = Image.open(os.path.join(constants.ASSETS_PATH, "background.png")).convert("RGBA").resize(returning_items_image_size)
+        returning_items_image.paste(background, (0, 0))
+        background.close() # Free memory
+
+        for i, item_image_path in enumerate(returning_items_files):
+            item_image_path = os.path.join(self._TEMP_PATH, item_image_path)
+            
+            item_image = image_helper.from_path(item_image_path, size=item_image_size)
+            returning_items_image.paste(
+                item_image,
+                ((0 + ((i % column_count) * item_image.width)),
+                    (0 + ((i // column_count) * item_image.height)))
+            )
+            item_image.close() # Free memory
+
+        return returning_items_image
+    
+    def _post_returning_items_image(self, image_path, response_to):
+        return post_helper.post(
+            image_path,
+            strings_helper.STRINGS["returning_items_caption"],
+            response_to
         )
